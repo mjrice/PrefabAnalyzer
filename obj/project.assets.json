@@ -692,22 +692,24 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mrice\\Documents\\src\\PrefabAnalzyer\\PrefabAnalzyer.csproj",
+      "projectUniqueName": "C:\\Users\\mrice\\Documents\\GitHub\\PrefabAnalyzer\\PrefabAnalzyer.csproj",
       "projectName": "PrefabAnalzyer",
-      "projectPath": "C:\\Users\\mrice\\Documents\\src\\PrefabAnalzyer\\PrefabAnalzyer.csproj",
+      "projectPath": "C:\\Users\\mrice\\Documents\\GitHub\\PrefabAnalyzer\\PrefabAnalzyer.csproj",
       "packagesPath": "C:\\Users\\mrice\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mrice\\Documents\\src\\PrefabAnalzyer\\obj\\",
+      "outputPath": "C:\\Users\\mrice\\Documents\\GitHub\\PrefabAnalyzer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\mrice\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\mrice\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.2"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

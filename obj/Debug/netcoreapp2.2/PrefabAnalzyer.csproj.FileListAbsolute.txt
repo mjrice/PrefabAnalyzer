@@ -9,3 +9,14 @@ C:\Users\mrice\Documents\src\PrefabAnalzyer\obj\Debug\netcoreapp2.2\PrefabAnalzy
 C:\Users\mrice\Documents\src\PrefabAnalzyer\obj\Debug\netcoreapp2.2\PrefabAnalzyer.AssemblyInfo.cs
 C:\Users\mrice\Documents\src\PrefabAnalzyer\obj\Debug\netcoreapp2.2\PrefabAnalzyer.dll
 C:\Users\mrice\Documents\src\PrefabAnalzyer\obj\Debug\netcoreapp2.2\PrefabAnalzyer.pdb
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\bin\Debug\netcoreapp2.2\PrefabAnalzyer.deps.json
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\bin\Debug\netcoreapp2.2\PrefabAnalzyer.runtimeconfig.json
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\bin\Debug\netcoreapp2.2\PrefabAnalzyer.runtimeconfig.dev.json
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\bin\Debug\netcoreapp2.2\PrefabAnalzyer.dll
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\bin\Debug\netcoreapp2.2\PrefabAnalzyer.pdb
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\obj\Debug\netcoreapp2.2\PrefabAnalzyer.csprojAssemblyReference.cache
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\obj\Debug\netcoreapp2.2\PrefabAnalzyer.csproj.CoreCompileInputs.cache
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\obj\Debug\netcoreapp2.2\PrefabAnalzyer.AssemblyInfoInputs.cache
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\obj\Debug\netcoreapp2.2\PrefabAnalzyer.AssemblyInfo.cs
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\obj\Debug\netcoreapp2.2\PrefabAnalzyer.dll
+C:\Users\mrice\Documents\GitHub\PrefabAnalyzer\obj\Debug\netcoreapp2.2\PrefabAnalzyer.pdb
