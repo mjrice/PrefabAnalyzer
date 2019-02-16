@@ -3,32 +3,31 @@ The purpose of this little app is to analyze the playability of a randomly gener
 
 # Sample output
 
-```Starting up, reading e:\Steam\steamapps\common\7 Days To Die\Data\Worlds\Navezgane\prefabs.xml
-There were 1362 prefab instances of 336 types found in the world "Navezgane"
-Prefabs will spawn between coordinates (-2298,-2420) and (2408,2291)
+```There were 1362 prefab instances of 336 types found in the world "Navezgane" which was created on Tuesday, December 18, 2018 at 12:31 AM
+Prefabs will spawn between coordinates (-2298,5,-2420) and (2408,147,2291)
 In a grid with each block 470.7 by 471.2 meters, here is the number of prefabs in each block:
-0	0	0	0	3	2	2	1	3	1	
-3	6	6	14	15	5	22	16	130	6	
-0	8	11	16	7	10	16	11	12	0	
-3	10	2	50	14	10	14	10	14	3	
-2	13	11	69	48	11	14	16	24	0	
-2	18	10	5	28	12	28	20	25	3	
-11	17	17	18	31	13	41	34	21	3	
-5	19	10	14	33	15	17	18	17	0	
-2	44	5	22	21	13	17	14	17	0	
-0	9	2	10	1	3	7	0	4	2	
-The 10 most commonly duplicated prefabs were: 
-	tree_cactus_01, which appears 29 times.
-	mp_waste_hole_asphalt_01, which appears 20 times.
-	roadblock_01, which appears 19 times.
-	player_start1, which appears 14 times.
-	gravestowne_city_blk_01, which appears 13 times.
-	mp_waste_tree_pile_02, which appears 12 times.
-	player_start4, which appears 12 times.
-	mp_waste_tree_pile_01, which appears 12 times.
-	tree_bruntpine_cluster_01, which appears 11 times.
-	player_start3, which appears 11 times.
-
+	0	0	0	0	3	2	2	1	3	1	
+	3	6	6	14	15	5	22	16	130	6	
+	0	8	11	16	7	10	16	11	12	0	
+	3	10	2	50	14	10	14	10	14	3	
+	2	13	11	69	48	11	14	16	24	0	
+	2	18	10	5	28	12	28	20	25	3	
+	11	17	17	18	31	13	41	34	21	3	
+	5	19	10	14	33	15	17	18	17	0	
+	2	44	5	22	21	13	17	14	17	0	
+	0	9	2	10	1	3	7	0	4	2	
+The 10 most commonly duplicated prefabs account for 11.23% of the prefabs and are: 
+	Prefab:              	Occurances:
+	tree_cactus_01       	29
+	mp_waste_hole_asphalt_01	20
+	roadblock_01         	19
+	player_start1        	14
+	gravestowne_city_blk_01	13
+	mp_waste_tree_pile_02	12
+	player_start4        	12
+	mp_waste_tree_pile_01	12
+	tree_bruntpine_cluster_01	11
+	player_start3        	11
 Summary of prefab types:
 	other         = 466 (34.21%)
 	trader        =   5 (0.36%)
@@ -42,6 +41,8 @@ Summary of prefab types:
 	waste_bldg    =  21 (1.54%)
 	cave          =   5 (0.36%)
 	factory       =   2 (0.14%)
+	
+On average, each trader is 1641 meters away from another trader.
 ```
 
 
