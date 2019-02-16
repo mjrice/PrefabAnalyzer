@@ -16,8 +16,11 @@ namespace PrefabAnalyzer
         static void Main(string[] args)
         {
             string fp="e:\\Steam\\steamapps\\common\\7 Days To Die\\Data\\Worlds"; // <==== put your worlds folder location here
-            string worldname="Wukumo Territory";
-            // "situtation19" 
+            string worldname="New Esio Valley";
+            // "NavezganeShmavizgane" New Esio Valley
+            // "aa" New Itako Valley
+            // "occupyTFP" Pidana County
+            // "situtation19"  Valobu Territory
             // "8" Wukumo Territory
             // "7" Xihutu Territory
             // "5" Maviku Mountains
@@ -31,12 +34,33 @@ namespace PrefabAnalyzer
 
             bool isknown;
             string inputfile="prefabs.xml";
+            string mapinfofile="map_info.xml";
             int counts=0;
             string fpfn = fp + "\\" + worldname + "\\" + inputfile;
             char[] charSeparators = new char[] {','};            
             string[] result;
+            int xSize=8192;
+            int zSize=8192;
 
-            Console.WriteLine("Starting up, reading " + fpfn);
+            Console.WriteLine("Reading world info...");
+            fpfn = fp + "\\" + worldname + "\\" + mapinfofile;
+            XmlDocument xinfoDoc = new XmlDocument();
+            xinfoDoc.Load(fpfn);
+            foreach(XmlNode node in xinfoDoc.DocumentElement.ChildNodes)
+            {                                
+                string nextName = node.Attributes["name"].Value;                
+                if(nextName.Equals("HeightMapSize"))
+                {
+                    string size = node.Attributes["value"].Value;                    
+                    result = size.Split(charSeparators, StringSplitOptions.None);
+                    xSize = Int16.Parse(result[0]);
+                    zSize = Int16.Parse(result[1]);
+                    Console.WriteLine("world size is " + xSize + " by " + zSize);
+                }
+            }
+
+            fpfn = fp + "\\" + worldname + "\\" + inputfile;
+            Console.WriteLine("reading " + fpfn);
             XmlDocument xdoc = new XmlDocument();
             xdoc.Load(fpfn);
             
@@ -57,6 +81,7 @@ namespace PrefabAnalyzer
             typenames[9] = "waste_bldg";
             typenames[10]= "cave";
             typenames[11]= "factory";
+            //typenames[12]="xcostum";
 
             string[] typenames_ignore = new string[2];
             typenames_ignore[0] = "sign";
@@ -93,6 +118,7 @@ namespace PrefabAnalyzer
                     if(item.name.Equals(nextName))
                     {
                         isknown=true;
+                        item.count++;
                         item.count++;
                     }
                 }
@@ -168,16 +194,15 @@ namespace PrefabAnalyzer
             // sort the list of prefabs (most common ones first)
             namesList.Sort((x,y)=>y.count.CompareTo(x.count));           
 
-            for(int i=0;i<12;i++) typecounts[i]=0;
+            for(int i=0;i<typecounts.Length;i++) typecounts[i]=0;
+
             // tally count of each prefab type found
-            foreach(itemType item in namesList)
-            {             
+            foreach(itemType item in namesList) {             
                 typecounts[item.type]+= item.count;
             }
 
             int mostcommoncount=0;
-            for(int i=0;i<10;i++)
-            {
+            for(int i=0;i<10;i++) {
                 mostcommoncount += namesList[i].count;
             }
 
@@ -193,7 +218,7 @@ namespace PrefabAnalyzer
             }
 
             Console.WriteLine("\nSummary of prefab types:");
-            for(int i=0;i<12;i++)
+            for(int i=0;i<typecounts.Length;i++)
             {                                
                 pct = (float)typecounts[i]/counts * 10000.0f;
                 pcti = (int)pct;
@@ -229,6 +254,54 @@ namespace PrefabAnalyzer
             aveDistance /= (double)countdistances;
             aveDistance = (int)(aveDistance+.5);
             Console.WriteLine("\nOn average, each trader is " + aveDistance + " meters away from another trader.");
+
+            Console.WriteLine("\nAnalyzing bodies of water, this may take a minute...");
+            // analyze water
+            // <WaterSources>
+            // <Water pos="-4092, 39, -3484" minx="-4096" maxx="4096" minz="-4096" maxz="4096"/>
+            // The water blocks appear to be 8 meters by 8 meters each
+            int waterBlockSize = 8;
+            string waterfile = "water_info.xml";
+            XmlDocument xwaterdoc = new XmlDocument();
+            fpfn = fpfn = fp + "\\" + worldname + "\\" + waterfile;
+            xwaterdoc.Load(fpfn);
+            int waterblockcount = 0;
+            int buildings_in_water=0;
+            foreach(XmlNode node in xwaterdoc.DocumentElement.ChildNodes)
+            {             
+                waterblockcount++;
+                string waterPos = node.Attributes["pos"].Value;
+                result = waterPos.Split(charSeparators, StringSplitOptions.None);
+                int waterX = Int16.Parse(result[0]);                    
+                int waterZ = Int16.Parse(result[2]);
+
+                //Console.WriteLine("next water block is at " + waterX + ", " + waterZ);
+
+                /* this doesn't work right
+                 foreach(XmlNode poinode in xdoc.DocumentElement.ChildNodes)
+                 {
+                    string location = poinode.Attributes["position"].Value;
+                    result = location.Split(charSeparators, StringSplitOptions.None);
+                    int xLocation = Int16.Parse(result[0]);
+                    int zLocation = Int16.Parse(result[2]);
+                    if(Math.Abs(xLocation-waterX)<waterBlockSize/2 && Math.Abs(zLocation-waterZ)<waterBlockSize/2)
+                    {
+                        buildings_in_water++;
+                        break;
+                    }
+                } */
+            }
+            
+
+            double worldSquareMeters = xSize*zSize;
+            double waterArea = (waterblockcount*waterBlockSize*waterBlockSize);
+            double pctWater = waterArea / worldSquareMeters;
+            pctWater *= 10000.0;
+            pctWater = (int)pctWater;
+            pctWater *= .01;
+            Console.WriteLine("Identified " + waterArea + " square meters of water, which is " + pctWater + "% of the land area.");
+            //Console.WriteLine("It appears that there are " + buildings_in_water + " buildings located in the water.");
+
         }
     }
 }
