@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using System.IO;
+
 namespace PrefabAnalyzer
 {
     class Program
@@ -14,9 +16,19 @@ namespace PrefabAnalyzer
         static void Main(string[] args)
         {
             string fp="e:\\Steam\\steamapps\\common\\7 Days To Die\\Data\\Worlds"; // <==== put your worlds folder location here
-            string worldname="West Yijigo Territory";                                          // <==== this is the world to be analyzed
+            string worldname="Wukumo Territory";
+            // "situtation19" 
+            // "8" Wukumo Territory
+            // "7" Xihutu Territory
+            // "5" Maviku Mountains
+            // "4" Gozana Mountains 
+            // "3" Bireka Valley                                       // <==== this is the world to be analyzed
+            // "2" South Nafege County
+            // "1" Old Fenaha Valley
 
             List<itemType> namesList = new List<itemType>();            
+            List<string>   traderList = new List<string>();
+
             bool isknown;
             string inputfile="prefabs.xml";
             int counts=0;
@@ -27,6 +39,9 @@ namespace PrefabAnalyzer
             Console.WriteLine("Starting up, reading " + fpfn);
             XmlDocument xdoc = new XmlDocument();
             xdoc.Load(fpfn);
+            
+            FileInfo fi = new FileInfo(fpfn);
+            System.DateTime created = fi.CreationTime;
 
             int []typecounts = new int[12];
             string [] typenames = new string[12];
@@ -49,10 +64,12 @@ namespace PrefabAnalyzer
 
             Console.WriteLine("processing input file...\n");
 
-            int maxXLocation = 0;
-            int minXLocation = 0;
-            int maxZLocation = 0;
-            int minZLocation = 0;
+            int maxXLocation = -100;
+            int minXLocation = 100;
+            int maxZLocation = -100;
+            int minZLocation = 100;
+            int maxYLocation = -100;
+            int minYLocation = 100;
 
             // on the first pass, just determining how many of each type of prefab exist
             counts=0;
@@ -61,6 +78,7 @@ namespace PrefabAnalyzer
                 // each node should appear like this:  <decoration type="model" name="fastfood_01" position="214,49,-2856" rotation="1" />
                 counts++;
                 string nextName = node.Attributes["name"].Value;                
+                string location = node.Attributes["position"].Value;
 
                 isknown=false;
 
@@ -84,7 +102,7 @@ namespace PrefabAnalyzer
                     newitem.name = nextName;
                     newitem.count= 1;
                     newitem.type = 0;
-                    for(int k=1;k<12;k++)
+                    for(int k=1;k<typenames.Length;k++)
                     {
                         if(typenames[k].Length>0)
                         if(nextName.Contains(typenames[k])) newitem.type=k;
@@ -92,12 +110,22 @@ namespace PrefabAnalyzer
                     namesList.Add(newitem);                    
                 }
 
-                string location = node.Attributes["position"].Value;
                 result = location.Split(charSeparators, StringSplitOptions.None);
                 int xLocation = Int16.Parse(result[0]);
+                int yLocation = Int16.Parse(result[1]);
                 int zLocation = Int16.Parse(result[2]);
+
+                if(nextName.Contains("trader"))
+                {
+                    traderList.Add(location);
+                }
+
                 if(xLocation>maxXLocation) maxXLocation=xLocation;
                 if(xLocation<minXLocation) minXLocation=xLocation;
+
+                if(yLocation>maxYLocation) maxYLocation=yLocation;
+                if(yLocation<minYLocation) minYLocation=yLocation;
+
                 if(zLocation>maxZLocation) maxZLocation=zLocation;
                 if(zLocation<minZLocation) minZLocation=zLocation;
             }
@@ -123,12 +151,13 @@ namespace PrefabAnalyzer
                 bins[xbinInt,zbinInt] += 1;
             }
 
-            Console.WriteLine("\nThere were " + counts + " prefab instances of " + namesList.Count + " types found in the world \"" + worldname + "\"");
+            Console.WriteLine("\nThere were " + counts + " prefab instances of " + namesList.Count + " types found in the world \"" + worldname + "\" which was created on " + created.ToLongDateString() + " at " + created.ToShortTimeString());
             
-            Console.WriteLine("Prefabs will spawn between coordinates (" + minXLocation + "," + minZLocation + ") and (" + maxXLocation + "," + maxZLocation + ")");
+            Console.WriteLine("Prefabs will spawn between coordinates (" + minXLocation + "," + minYLocation + "," + minZLocation + ") and (" + maxXLocation + "," + maxYLocation + "," + maxZLocation + ")");
             Console.WriteLine("In a grid with each block " + widthX + " by " + widthZ + " meters, here is the number of prefabs in each block:");
             for(int z=0;z<10;z++)
             {
+                Console.Write("\t");
                 for(int x=0;x<10;x++)
                 {
                     Console.Write(bins[x,z] + "\t");
@@ -145,25 +174,61 @@ namespace PrefabAnalyzer
             {             
                 typecounts[item.type]+= item.count;
             }
-            
-            Console.WriteLine("The 10 most commonly duplicated prefabs were: ");
+
+            int mostcommoncount=0;
             for(int i=0;i<10;i++)
             {
-                Console.WriteLine("\t" + namesList[i].name + ", which appears " + namesList[i].count + " times.");
+                mostcommoncount += namesList[i].count;
+            }
+
+            float pct;
+            pct = (float)mostcommoncount/counts * 10000.0f;
+            int pcti = (int)pct;
+            pct = pcti * .01f;
+
+            Console.WriteLine("\nThe 10 most commonly duplicated prefabs account for " + pct + "% of the prefabs and are: ");
+            Console.WriteLine("\tPrefab:              \tOccurances:");
+            for(int i=0;i<10;i++) {
+                Console.WriteLine("\t" + namesList[i].name.PadRight(21) + "\t" + namesList[i].count );
             }
 
             Console.WriteLine("\nSummary of prefab types:");
             for(int i=0;i<12;i++)
-            {
-                if(typecounts[i]>0)
-                {
-                    float pct = (float)typecounts[i]/counts * 10000.0f;
-                    int pcti = (int)pct;
-                    pct = pcti * .01f;
-
-                    Console.WriteLine("\t" + typenames[i].PadRight(13) + " = " + typecounts[i].ToString().PadLeft(3) + " (" + pct + "%)");
-                }
+            {                                
+                pct = (float)typecounts[i]/counts * 10000.0f;
+                pcti = (int)pct;
+                pct = pcti * .01f;
+                Console.WriteLine("\t" + typenames[i].PadRight(13) + " = " + typecounts[i].ToString().PadLeft(3) + " (" + pct + "%)");                
             }
+
+            // analyze trader locations
+            double aveDistance=0.0;
+            int countdistances=0;            
+            foreach(string position in traderList)
+            {
+                result = position.Split(charSeparators, StringSplitOptions.None);
+                int x1 = Int16.Parse(result[0]);                
+                int z1 = Int16.Parse(result[2]);
+                double nearestNeighborDistance = 10000.0;
+                
+                foreach(string position2 in traderList)
+                {
+                    if(position.Equals(position2)==false)
+                    {
+                        result = position2.Split(charSeparators, StringSplitOptions.None);
+                        int x2 = Int16.Parse(result[0]);                    
+                        int z2 = Int16.Parse(result[2]);
+                    
+                        double distance = Math.Sqrt((x2-x1)*(x2-x1) + (z2-z1)*(z2-z1));            
+                        if(distance < nearestNeighborDistance) nearestNeighborDistance=distance;
+                    }
+                }                
+                aveDistance += nearestNeighborDistance;
+                countdistances++;
+            }
+            aveDistance /= (double)countdistances;
+            aveDistance = (int)(aveDistance+.5);
+            Console.WriteLine("\nOn average, each trader is " + aveDistance + " meters away from another trader.");
         }
     }
 }
