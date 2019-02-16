@@ -3,7 +3,8 @@ The purpose of this little app is to analyze the playability of a randomly gener
 
 # Sample output
 
-```There were 1362 prefab instances of 336 types found in the world "Navezgane" which was created on Tuesday, December 18, 2018 at 12:31 AM
+```
+There were 1362 prefab instances of 336 types found in the world "Navezgane" which was created on Tuesday, December 18, 2018 at 12:31 AM
 Prefabs will spawn between coordinates (-2298,5,-2420) and (2408,147,2291)
 In a grid with each block 470.7 by 471.2 meters, here is the number of prefabs in each block:
 	0	0	0	0	3	2	2	1	3	1	
@@ -16,6 +17,7 @@ In a grid with each block 470.7 by 471.2 meters, here is the number of prefabs i
 	5	19	10	14	33	15	17	18	17	0	
 	2	44	5	22	21	13	17	14	17	0	
 	0	9	2	10	1	3	7	0	4	2	
+
 The 10 most commonly duplicated prefabs account for 11.23% of the prefabs and are: 
 	Prefab:              	Occurances:
 	tree_cactus_01       	29
@@ -28,6 +30,7 @@ The 10 most commonly duplicated prefabs account for 11.23% of the prefabs and ar
 	mp_waste_tree_pile_01	12
 	tree_bruntpine_cluster_01	11
 	player_start3        	11
+
 Summary of prefab types:
 	other         = 466 (34.21%)
 	trader        =   5 (0.36%)
@@ -44,5 +47,3 @@ Summary of prefab types:
 	
 On average, each trader is 1641 meters away from another trader.
 ```
-
-
