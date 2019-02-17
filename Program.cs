@@ -16,18 +16,21 @@ namespace PrefabAnalyzer
         static void Main(string[] args)
         {
             string fp="e:\\Steam\\steamapps\\common\\7 Days To Die\\Data\\Worlds"; // <==== put your worlds folder location here
-            string worldname="New Esio Valley";
-            // "NavezganeShmavizgane" New Esio Valley
-            // "aa" New Itako Valley
-            // "occupyTFP" Pidana County
-            // "situtation19"  Valobu Territory
-            // "8" Wukumo Territory
-            // "7" Xihutu Territory
-            // "5" Maviku Mountains
-            // "4" Gozana Mountains 
-            // "3" Bireka Valley                                       // <==== this is the world to be analyzed
-            // "2" South Nafege County
-            // "1" Old Fenaha Valley
+            string worldname="North Jaxowa Mountains"; // <==== this is the world to be analyzed
+            // some seeds followed by the world names generated:
+            // "Nica Libres At Dusk"    North Jaxowa Mountains
+            // "analyzethis"            Secidi County
+            // "NavezganeShmavizgane"   New Esio Valley
+            // "aa"                     New Itako Valley
+            // "occupyTFP"              Pidana County
+            // "situtation19"           Valobu Territory
+            // "8"                      Wukumo Territory
+            // "7"                      Xihutu Territory
+            // "5"                      Maviku Mountains
+            // "4"                      Gozana Mountains 
+            // "3"                      Bireka Valley                                       
+            // "2"                      South Nafege County
+            // "1"                      Old Fenaha Valley
 
             List<itemType> namesList = new List<itemType>();            
             List<string>   traderList = new List<string>();
@@ -67,8 +70,8 @@ namespace PrefabAnalyzer
             FileInfo fi = new FileInfo(fpfn);
             System.DateTime created = fi.CreationTime;
 
-            int []typecounts = new int[12];
-            string [] typenames = new string[12];
+            int []typecounts = new int[13];
+            string [] typenames = new string[13];
             typenames[0] = "other";
             typenames[1] = "trader";
             typenames[2] = "survivor_site";
@@ -81,13 +84,13 @@ namespace PrefabAnalyzer
             typenames[9] = "waste_bldg";
             typenames[10]= "cave";
             typenames[11]= "factory";
-            //typenames[12]="xcostum";
+            typenames[12]= "field";
 
             string[] typenames_ignore = new string[2];
             typenames_ignore[0] = "sign";
             typenames_ignore[1] = "street_light";
 
-            Console.WriteLine("processing input file...\n");
+            Console.WriteLine("processing input file...");
 
             int maxXLocation = -100;
             int minXLocation = 100;
@@ -118,8 +121,7 @@ namespace PrefabAnalyzer
                     if(item.name.Equals(nextName))
                     {
                         isknown=true;
-                        item.count++;
-                        item.count++;
+                        item.count++;                 
                     }
                 }
                 if(isknown==false)
@@ -158,8 +160,8 @@ namespace PrefabAnalyzer
 
             
             // divide the world into a matrix of 10 by 10 blocks and then tally which block each prefab is in, in order to see how spread out or clumpy it is
-            float widthX = (float)(maxXLocation-minXLocation+1) * .1f;
-            float widthZ = (float)(maxZLocation-minZLocation+1) * .1f;
+            float widthX = xSize * .1f; //(float)(maxXLocation-minXLocation+1) * .1f;
+            float widthZ = zSize * .1f; //(float)(maxZLocation-minZLocation+1) * .1f;
             int [,] bins = new int [10,10];
             foreach(XmlNode node in xdoc.DocumentElement.ChildNodes)
             {
@@ -177,11 +179,11 @@ namespace PrefabAnalyzer
                 bins[xbinInt,zbinInt] += 1;
             }
 
-            Console.WriteLine("\nThere were " + counts + " prefab instances of " + namesList.Count + " types found in the world \"" + worldname + "\" which was created on " + created.ToLongDateString() + " at " + created.ToShortTimeString());
-            
+            Console.WriteLine("\nThere were " + counts + " prefab instances of " + namesList.Count + " types found in the world \"" + worldname + "\" which was created on " + created.ToLongDateString() + " at " + created.ToShortTimeString());            
             Console.WriteLine("Prefabs will spawn between coordinates (" + minXLocation + "," + minYLocation + "," + minZLocation + ") and (" + maxXLocation + "," + maxYLocation + "," + maxZLocation + ")");
             Console.WriteLine("In a grid with each block " + widthX + " by " + widthZ + " meters, here is the number of prefabs in each block:");
-            for(int z=0;z<10;z++)
+
+            for(int z=9;z>=0;z--)
             {
                 Console.Write("\t");
                 for(int x=0;x<10;x++)
@@ -223,7 +225,7 @@ namespace PrefabAnalyzer
                 pct = (float)typecounts[i]/counts * 10000.0f;
                 pcti = (int)pct;
                 pct = pcti * .01f;
-                Console.WriteLine("\t" + typenames[i].PadRight(13) + " = " + typecounts[i].ToString().PadLeft(3) + " (" + pct + "%)");                
+                Console.WriteLine("\t" + typenames[i].PadRight(13) + " = " + typecounts[i].ToString().PadLeft(4) + " (" + pct + "%)");                
             }
 
             // analyze trader locations
@@ -302,6 +304,38 @@ namespace PrefabAnalyzer
             Console.WriteLine("Identified " + waterArea + " square meters of water, which is " + pctWater + "% of the land area.");
             //Console.WriteLine("It appears that there are " + buildings_in_water + " buildings located in the water.");
 
+            int [,] waterbins = new int [10,10];
+            foreach(XmlNode node in xwaterdoc.DocumentElement.ChildNodes)
+            {
+                string location = node.Attributes["pos"].Value;
+                result = location.Split(charSeparators, StringSplitOptions.None);
+                int xLocation = Int16.Parse(result[0]);
+                int zLocation = Int16.Parse(result[2]);
+
+                float xbin = (float)(xLocation - minXLocation) / widthX;
+                int xbinInt = (int)(xbin);
+
+                float zbin = (float)(zLocation - minZLocation) / widthZ;
+                int zbinInt = (int)(zbin);
+
+                waterbins[xbinInt,zbinInt] += 1;
+            }
+            
+            Console.WriteLine("In a grid with each block " + widthX + " by " + widthZ + " meters, here is the percentage of each grid block that is covered in water:");
+            for(int z=9;z>=0;z--)
+            {
+                Console.Write("\t");
+                for(int x=0;x<10;x++)
+                {
+                    float waterarea = waterbins[x,z] * waterBlockSize * waterBlockSize;
+                    pct = waterarea / (widthX*widthZ) * 1000.0f;
+                    pct = (int)pct;
+                    pct *= 0.1f;
+                    string s = pct.ToString("N1");
+                    Console.Write(s.PadLeft(4) + "%\t");
+                }
+                Console.Write("\n");
+            }
         }
     }
 }
